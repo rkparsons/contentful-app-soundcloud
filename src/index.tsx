@@ -23,7 +23,7 @@ export const FieldExtension = ({ sdk }: FieldExtensionProps) => {
 
   const fetchMetadata = useCallback(() => {
     setWaveformUrl(`www.example.com/tracks/${trackId}`);
-  }, [sdk.field, trackId]);
+  }, [trackId]);
 
   useEffect(() => {
     sdk.field.setValue({
