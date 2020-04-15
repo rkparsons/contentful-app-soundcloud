@@ -32,6 +32,7 @@
     "@contentful/forma-36-fcss": "^0.0.20",
     "@contentful/forma-36-react-components": "^3.28.9",
     "@contentful/forma-36-tokens": "^0.3.0",
+    "axios": "^0.19.2",
     "contentful-ui-extensions-sdk": "^3.10.10",
     "emotion": "^10.0.27",
     "lodash": "^4.17.15",
