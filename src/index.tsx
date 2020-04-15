@@ -73,24 +73,25 @@ export const FieldExtension = ({ sdk }: FieldExtensionProps) => {
   }, [clientId, trackId]);
 
   return (
-    <section>
-      <TextInput
-        name="trackId"
-        type="number"
-        value={trackId}
-        className="f36-margin-bottom--m"
-        onChange={updateTrackId}
-      />
-      {error && <ValidationMessage>Invalid track id</ValidationMessage>}
+    <>
+      <section>
+        <TextInput
+          name="trackId"
+          type="number"
+          value={trackId}
+          className="f36-margin-bottom--m"
+          onChange={updateTrackId}
+        />
+        {error && <ValidationMessage>Invalid track id</ValidationMessage>}
 
-      <Button onClick={fetchMetadata} disabled={!trackId}>
-        Fetch Metadata
-      </Button>
-      <TextInput type="url" value={streamUrl} />
+        <Button onClick={fetchMetadata} disabled={!trackId}>
+          Fetch Metadata
+        </Button>
+      </section>
       {samples && (
-        <Note noteType="positive">Audio waveform retrieved with ${samples.length} samples</Note>
+        <Note noteType="positive">Audio waveform retrieved with {samples.length} samples</Note>
       )}
-    </section>
+    </>
   );
 };
 
