@@ -72,6 +72,12 @@ export const FieldExtension = ({ sdk }: FieldExtensionProps) => {
       });
   }, [clientId, trackId]);
 
+  const handleClick = useCallback(() => {
+    setError(undefined);
+    setSamples(undefined);
+    fetchMetadata();
+  }, [setError, setSamples, fetchMetadata]);
+
   return (
     <>
       <section>
@@ -84,7 +90,7 @@ export const FieldExtension = ({ sdk }: FieldExtensionProps) => {
         />
         {error && <ValidationMessage>Invalid track id</ValidationMessage>}
 
-        <Button onClick={fetchMetadata} disabled={!trackId}>
+        <Button onClick={handleClick} disabled={!trackId}>
           Fetch Metadata
         </Button>
       </section>
