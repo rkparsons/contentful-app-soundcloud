@@ -2,7 +2,7 @@ import '@contentful/forma-36-react-components/dist/styles.css';
 import './index.css';
 
 import { AppExtensionSDK, FieldExtensionSDK, init, locations } from 'contentful-ui-extensions-sdk';
-import { Button, TextInput } from '@contentful/forma-36-react-components';
+import { Button, TextInput, ValidationMessage } from '@contentful/forma-36-react-components';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import AppConfig from './AppConfig';
@@ -35,6 +35,7 @@ export const FieldExtension = ({ sdk }: FieldExtensionProps) => {
   const [trackId, setTrackId] = useState(savedValue.trackId);
   const [streamUrl, setStreamUrl] = useState(savedValue.streamUrl);
   const [samples, setSamples] = useState(savedValue.samples);
+  const [error, setError] = useState<Error>();
 
   useEffect(() => {
     sdk.window.startAutoResizer();
@@ -65,6 +66,9 @@ export const FieldExtension = ({ sdk }: FieldExtensionProps) => {
         const maxValue = Math.max(...data.samples);
         const samples = data.samples.map((x: number) => x / maxValue);
         setSamples(samples);
+      })
+      .catch((error: Error) => {
+        setError(error);
       });
   }, [clientId, trackId]);
 
@@ -82,6 +86,7 @@ export const FieldExtension = ({ sdk }: FieldExtensionProps) => {
       </Button>
       <TextInput type="url" value={streamUrl} />
       {samples && <TextInput type="text" value={samples.length.toString()} />}
+      {error && <ValidationMessage>{error.message}</ValidationMessage>}
     </section>
   );
 };
