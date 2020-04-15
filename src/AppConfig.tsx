@@ -13,12 +13,12 @@ export default class AppConfig extends React.Component<AppConfigParams, SavedPar
   async componentDidMount() {
     const { sdk } = this.props;
 
-    const savedParams = (await sdk.app.getParameters()) as SavedParams;
+    const savedParams = ((await sdk.app.getParameters()) || {}) as SavedParams;
 
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState(
       {
-        clientId: savedParams.clientId
+        clientId: (savedParams as SavedParams).clientId || ''
       },
       () => sdk.app.setReady()
     );
