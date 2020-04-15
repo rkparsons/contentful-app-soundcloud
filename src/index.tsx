@@ -9,12 +9,26 @@ import AppConfig from './AppConfig';
 import { FieldExtensionProps } from './typings';
 import { render } from 'react-dom';
 
+type Metadata = {
+  trackId: string;
+  waveformUrl: string;
+};
+
 export const FieldExtension = ({ sdk }: FieldExtensionProps) => {
-  const [trackId, setTrackId] = useState<string>();
-  const [waveformUrl, setWaveformUrl] = useState<string>();
+  const savedValue = sdk.field.getValue() as Metadata;
+  const [trackId, setTrackId] = useState<string>(savedValue.trackId);
+  const [waveformUrl, setWaveformUrl] = useState<string>(savedValue.waveformUrl);
+
   useEffect(() => {
     sdk.window.startAutoResizer();
   }, [sdk.window]);
+
+  useEffect(() => {
+    sdk.field.setValue({
+      trackId: trackId,
+      waveformUrl: `www.example.com/tracks/${trackId}`
+    });
+  }, [trackId, waveformUrl, sdk.field]);
 
   const updateTrackId = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => setTrackId(event.target.value),
@@ -24,13 +38,6 @@ export const FieldExtension = ({ sdk }: FieldExtensionProps) => {
   const fetchMetadata = useCallback(() => {
     setWaveformUrl(`www.example.com/tracks/${trackId}`);
   }, [trackId]);
-
-  useEffect(() => {
-    sdk.field.setValue({
-      trackId: trackId,
-      waveformUrl: `www.example.com/tracks/${trackId}`
-    });
-  }, [trackId, waveformUrl, sdk.field]);
 
   return (
     <section>
