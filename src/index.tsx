@@ -11,9 +11,9 @@ import axios from 'axios';
 import { render } from 'react-dom';
 
 type Metadata = {
-  trackId: string;
-  streamUrl: string;
-  samples: number[];
+  trackId?: string;
+  streamUrl?: string;
+  samples?: number[];
 };
 
 type InstallationParameters = {
@@ -32,9 +32,9 @@ type SoundCloudWaveform = {
 export const FieldExtension = ({ sdk }: FieldExtensionProps) => {
   const { clientId } = sdk.parameters.installation as InstallationParameters;
   const savedValue = sdk.field.getValue() as Metadata;
-  const [trackId, setTrackId] = useState<string>(savedValue.trackId);
-  const [streamUrl, setStreamUrl] = useState<string>(savedValue.streamUrl);
-  const [samples, setSamples] = useState<number[]>(savedValue.samples);
+  const [trackId, setTrackId] = useState(savedValue.trackId);
+  const [streamUrl, setStreamUrl] = useState(savedValue.streamUrl);
+  const [samples, setSamples] = useState(savedValue.samples);
 
   useEffect(() => {
     sdk.window.startAutoResizer();
@@ -81,7 +81,7 @@ export const FieldExtension = ({ sdk }: FieldExtensionProps) => {
         Fetch Metadata
       </Button>
       <TextInput type="url" value={streamUrl} />
-      <TextInput type="text" value={samples.length.toString()} />
+      {samples && <TextInput type="text" value={samples.length.toString()} />}
     </section>
   );
 };
