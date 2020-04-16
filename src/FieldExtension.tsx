@@ -1,4 +1,4 @@
-import { Button, Notification, TextField } from '@contentful/forma-36-react-components';
+import { Button, TextField } from '@contentful/forma-36-react-components';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { FieldExtensionProps } from './typings';
@@ -50,6 +50,12 @@ const FieldExtension = ({ sdk }: FieldExtensionProps) => {
         setTrackId(event.target.value);
     }, []);
 
+    const publishEntry = () => {
+        sdk.space
+            .getEntry(sdk.entry.fields.id.getValue())
+            .then(entry => sdk.space.publishEntry(entry));
+    };
+
     const fetchMetadata = useCallback(() => {
         axios
             .get<SoundCloudTrack>(
@@ -64,6 +70,7 @@ const FieldExtension = ({ sdk }: FieldExtensionProps) => {
                 const maxValue = Math.max(...data.samples);
                 const samples = data.samples.map((x: number) => x / maxValue);
                 setSamples(samples);
+                publishEntry();
             })
             .catch((error: Error) => {
                 setError(error);
@@ -88,10 +95,6 @@ const FieldExtension = ({ sdk }: FieldExtensionProps) => {
                     textInputProps={{ value: trackId, type: 'number', onChange: updateTrackId }}
                 />
 
-                <Button onClick={handleClick} disabled={!trackId} icon="Settings">
-                    Generate Metadata
-                </Button>
-
                 <TextField
                     id="streamUrl"
                     name="streamUrl"
@@ -110,6 +113,10 @@ const FieldExtension = ({ sdk }: FieldExtensionProps) => {
                         disabled: true
                     }}
                 />
+
+                <Button onClick={handleClick} disabled={!trackId} icon="Settings">
+                    Generate Metadata
+                </Button>
             </section>
         </>
     );
