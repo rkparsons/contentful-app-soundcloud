@@ -89,7 +89,7 @@ const FieldExtension = ({ sdk }: FieldExtensionProps) => {
                     name="streamUrl"
                     labelText="Stream URL"
                     required
-                    validationMessage="Enter valid track ID."
+                    validationMessage={!trackId ? 'Enter valid track ID.' : ''}
                     textInputProps={{ value: trackId, type: 'number', onChange: updateTrackId }}
                 />
                 {error && <ValidationMessage>Invalid track id</ValidationMessage>}
@@ -103,8 +103,7 @@ const FieldExtension = ({ sdk }: FieldExtensionProps) => {
                     name="streamUrl"
                     labelText="Stream URL"
                     required
-                    validationMessage="Click 'Generate Metadata'"
-                    textInputProps={{ value: streamUrl }}
+                    textInputProps={{ value: streamUrl, disabled: true }}
                 />
             </section>
         </>
