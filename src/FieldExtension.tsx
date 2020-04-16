@@ -12,6 +12,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 
 import { FieldExtensionProps } from './typings'
 import axios from 'axios'
+import styles from './styles'
 
 type Metadata = {
     duration?: number
@@ -104,10 +105,13 @@ const FieldExtension = ({ sdk }: FieldExtensionProps) => {
                 />
                 <br />
                 {error && <ValidationMessage>Invalid track url</ValidationMessage>}
-                <Button onClick={handleClick} disabled={!trackUrl} icon="Settings">
+                <Button
+                    onClick={handleClick}
+                    disabled={!trackUrl}
+                    icon="Settings"
+                    className={styles.fullWidth}>
                     Generate Metadata
                 </Button>
-                <br />
                 <Table>
                     <TableHead>
                         <TableRow>

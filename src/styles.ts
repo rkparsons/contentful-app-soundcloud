@@ -14,15 +14,6 @@ export default {
         boxShadow: '0px 0px 20px rgba(0, 0, 0, 0.1)',
         borderRadius: '2px'
     }),
-    lightText: css({
-        color: tokens.colorTextLight
-    }),
-    signInButton: css({
-        textAlign: 'center',
-        dispay: 'none',
-        margin: 'auto',
-        cursor: 'pointer'
-    }),
     splitter: css({
         marginTop: tokens.spacingL,
         marginBottom: tokens.spacingL,
@@ -39,58 +30,10 @@ export default {
         height: '300px',
         backgroundColor: '#f8ab00'
     }),
-    contentTypeGrid: css({
-        display: 'grid',
-        gridTemplateColumns: 'repeat(3, 1fr) max-content',
-        gridGap: tokens.spacingXs
-    }),
-    contentTypeGridInputs: css({
-        marginBottom: tokens.spacingM
-    }),
-    header: css({
-        display: 'grid',
-        gridTemplateColumns: '1.5fr 1.25fr',
-        gridColumnGap: tokens.spacing2Xs,
-        width: '100%',
-        alignItems: 'self-end',
-        marginBottom: tokens.spacingXs
-    }),
-    invisible: css({
-        visibility: 'hidden'
-    }),
-    hidden: css({
-        display: 'none'
-    }),
-    slug: css({
-        color: tokens.colorTextLight,
-        fontSize: tokens.fontSizeS,
-        marginBottom: tokens.spacingM
-    }),
     spaced: css({
         marginBottom: tokens.spacingL
     }),
-    timeline: css({
-        position: 'relative'
-    }),
-    timelineChart: css({
-        minHeight: '200px'
-    }),
-    timelineSkeleton: css({
-        position: 'absolute',
-        top: 0,
-        left: 0
-    }),
-    pageViews: css({
-        opacity: 1,
-        transition: `opacity ${tokens.transitionDurationShort}`
-    }),
-    pageViewsLoading: css({
-        opacity: 0,
-        transition: `opacity ${tokens.transitionDurationShort}`
-    }),
-    logo: css({
-        display: 'flex',
-        justifyContent: 'center',
-        margin: `${tokens.spacing2Xl} 0 ${tokens.spacing4Xl}`
+    fullWidth: css({
+        width: '100%'
     })
 }
