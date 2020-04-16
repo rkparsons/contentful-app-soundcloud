@@ -64,12 +64,6 @@ const FieldExtension = ({ sdk }: FieldExtensionProps) => {
                 const maxValue = Math.max(...data.samples);
                 const samples = data.samples.map((x: number) => x / maxValue);
                 setSamples(samples);
-
-                if (samples.length) {
-                    Notification.success(`${samples.length} audio peaks detected`);
-                } else {
-                    Notification.error(`No audio peaks detected`);
-                }
             })
             .catch((error: Error) => {
                 setError(error);
