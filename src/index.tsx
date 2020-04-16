@@ -2,7 +2,13 @@ import '@contentful/forma-36-react-components/dist/styles.css';
 import './index.css';
 
 import { AppExtensionSDK, FieldExtensionSDK, init, locations } from 'contentful-ui-extensions-sdk';
-import { Button, Note, TextInput, ValidationMessage } from '@contentful/forma-36-react-components';
+import {
+  Button,
+  Icon,
+  Note,
+  TextInput,
+  ValidationMessage
+} from '@contentful/forma-36-react-components';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import AppConfig from './AppConfig';
@@ -87,16 +93,20 @@ export const FieldExtension = ({ sdk }: FieldExtensionProps) => {
           value={trackId}
           className="f36-margin-bottom--m"
           onChange={updateTrackId}
+          width="small"
         />
-        {error && <ValidationMessage>Invalid track id</ValidationMessage>}
 
         <Button onClick={handleClick} disabled={!trackId}>
           Fetch Metadata
         </Button>
+        {samples && (
+          <>
+            <Icon color="primary" size="large" icon="Edit" /> Audio waveform retrieved with{' '}
+            {samples.length} samples
+          </>
+        )}
       </section>
-      {samples && (
-        <Note noteType="positive">Audio waveform retrieved with {samples.length} samples</Note>
-      )}
+      {error && <ValidationMessage>Invalid track id</ValidationMessage>}
     </>
   );
 };
