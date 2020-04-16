@@ -1,10 +1,4 @@
-import {
-    Button,
-    Note,
-    TextField,
-    TextInput,
-    ValidationMessage
-} from '@contentful/forma-36-react-components';
+import { Button, Notification, TextField } from '@contentful/forma-36-react-components';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { FieldExtensionProps } from './typings';
@@ -50,6 +44,7 @@ const FieldExtension = ({ sdk }: FieldExtensionProps) => {
     }, [trackId, streamUrl, samples, sdk.field]);
 
     const updateTrackId = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+        setError(undefined);
         setStreamUrl(undefined);
         setSamples(undefined);
         setTrackId(event.target.value);
@@ -69,6 +64,12 @@ const FieldExtension = ({ sdk }: FieldExtensionProps) => {
                 const maxValue = Math.max(...data.samples);
                 const samples = data.samples.map((x: number) => x / maxValue);
                 setSamples(samples);
+
+                if (samples.length) {
+                    Notification.success(`${samples.length} audio peaks detected`);
+                } else {
+                    Notification.error(`No audio peaks detected`);
+                }
             })
             .catch((error: Error) => {
                 setError(error);
@@ -89,10 +90,9 @@ const FieldExtension = ({ sdk }: FieldExtensionProps) => {
                     name="trackId"
                     labelText="Track ID"
                     required
-                    validationMessage={!trackId ? 'Enter valid track ID.' : ''}
+                    validationMessage={error ? 'Invalid track id.' : undefined}
                     textInputProps={{ value: trackId, type: 'number', onChange: updateTrackId }}
                 />
-                {error && <ValidationMessage>Invalid track id</ValidationMessage>}
 
                 <Button onClick={handleClick} disabled={!trackId} icon="Settings">
                     Generate Metadata
@@ -104,6 +104,17 @@ const FieldExtension = ({ sdk }: FieldExtensionProps) => {
                     labelText="Stream URL"
                     required
                     textInputProps={{ value: streamUrl, disabled: true }}
+                />
+
+                <TextField
+                    id="samples"
+                    name="samples"
+                    labelText="Audio Peaks"
+                    required
+                    textInputProps={{
+                        value: samples ? `${samples.length}` : undefined,
+                        disabled: true
+                    }}
                 />
             </section>
         </>
