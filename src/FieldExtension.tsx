@@ -76,6 +76,9 @@ const FieldExtension = ({ sdk }: FieldExtensionProps) => {
                 `https://api.soundcloud.com/resolve.json?url=${trackUrl}&client_id=${clientId}`
             )
             .then(({ data }) => {
+                if (!data.stream_url) {
+                    throw new Error('Stream URL not found')
+                }
                 setStreamUrl(data.stream_url)
                 setDuration(data.duration)
                 setTitle(data.title)
