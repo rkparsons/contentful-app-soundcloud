@@ -5,7 +5,8 @@ import {
     TableCell,
     TableHead,
     TableRow,
-    TextField
+    TextInput,
+    ValidationMessage
 } from '@contentful/forma-36-react-components'
 import React, { useCallback, useEffect, useState } from 'react'
 
@@ -93,18 +94,20 @@ const FieldExtension = ({ sdk }: FieldExtensionProps) => {
     return (
         <>
             <section>
-                <TextField
+                <TextInput
                     id="trackUrl"
                     name="trackUrl"
-                    labelText="SoundCloud URL"
+                    value={trackUrl}
+                    onChange={updateTrackUrl}
+                    placeholder="Enter SoundCloud track URL and click 'Generate Metadata'"
                     required
-                    validationMessage={error ? 'Invalid track url.' : undefined}
-                    textInputProps={{ value: trackUrl, onChange: updateTrackUrl }}
                 />
+                <br />
+                {error && <ValidationMessage>Invalid track url</ValidationMessage>}
                 <Button onClick={handleClick} disabled={!trackUrl} icon="Settings">
                     Generate Metadata
                 </Button>
-
+                <br />
                 <Table>
                     <TableHead>
                         <TableRow>
