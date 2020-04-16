@@ -18,6 +18,7 @@ type Metadata = {
     duration?: number
     samples?: number[]
     streamUrl?: string
+    title?: string
     trackUrl?: string
 }
 
@@ -28,6 +29,7 @@ type InstallationParameters = {
 type SoundCloudTrack = {
     duration: number
     stream_url: string
+    title: string
     waveform_url: string
 }
 
@@ -42,6 +44,7 @@ const FieldExtension = ({ sdk }: FieldExtensionProps) => {
     const [streamUrl, setStreamUrl] = useState(savedValue.streamUrl)
     const [duration, setDuration] = useState(savedValue.duration)
     const [samples, setSamples] = useState(savedValue.samples)
+    const [title, setTitle] = useState(savedValue.title)
     const [error, setError] = useState<Error>()
 
     useEffect(() => {
@@ -53,15 +56,17 @@ const FieldExtension = ({ sdk }: FieldExtensionProps) => {
             trackUrl,
             streamUrl,
             duration,
-            samples
+            samples,
+            title
         })
-    }, [trackUrl, streamUrl, duration, samples, sdk.field])
+    }, [trackUrl, streamUrl, duration, samples, title, sdk.field])
 
     const updateTrackUrl = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         setError(undefined)
         setStreamUrl(undefined)
         setDuration(undefined)
         setSamples(undefined)
+        setTitle(undefined)
         setTrackUrl(event.target.value)
     }, [])
 
@@ -73,6 +78,7 @@ const FieldExtension = ({ sdk }: FieldExtensionProps) => {
             .then(({ data }) => {
                 setStreamUrl(data.stream_url)
                 setDuration(data.duration)
+                setTitle(data.title)
                 const samplesUrl = data.waveform_url.replace('.png', '.json')
                 return axios.get<SoundCloudWaveform>(samplesUrl)
             })
@@ -89,6 +95,9 @@ const FieldExtension = ({ sdk }: FieldExtensionProps) => {
     const handleClick = useCallback(() => {
         setError(undefined)
         setSamples(undefined)
+        setTitle(undefined)
+        setStreamUrl(undefined)
+        setDuration(undefined)
         fetchMetadata()
     }, [setError, setSamples, fetchMetadata])
 
@@ -115,6 +124,7 @@ const FieldExtension = ({ sdk }: FieldExtensionProps) => {
                 <Table>
                     <TableHead>
                         <TableRow>
+                            <TableCell>Title</TableCell>
                             <TableCell>Stream URL</TableCell>
                             <TableCell>Duration (ms)</TableCell>
                             <TableCell>Waveform Samples</TableCell>
@@ -122,6 +132,7 @@ const FieldExtension = ({ sdk }: FieldExtensionProps) => {
                     </TableHead>
                     <TableBody>
                         <TableRow>
+                            <TableCell>{title}</TableCell>
                             <TableCell>{streamUrl}</TableCell>
                             <TableCell>{duration}</TableCell>
                             <TableCell>{samples && samples.length}</TableCell>
