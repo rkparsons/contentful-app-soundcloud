@@ -101,7 +101,8 @@ const FieldExtension = ({ sdk }: FieldExtensionProps) => {
                     required
                     textInputProps={{ value: streamUrl, disabled: true }}
                 />
-
+            </section>
+            <section>
                 <TextField
                     id="samples"
                     name="samples"
