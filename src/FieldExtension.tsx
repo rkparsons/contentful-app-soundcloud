@@ -14,11 +14,6 @@ type InstallationParameters = {
     clientId: string
 }
 
-type SoundCloudLocation = {
-    status: string
-    location: string
-}
-
 type SoundCloudTrack = {
     waveform_url: string
     stream_url: string
@@ -57,12 +52,9 @@ const FieldExtension = ({ sdk }: FieldExtensionProps) => {
 
     const fetchMetadata = useCallback(() => {
         axios
-            .get<SoundCloudLocation>(
+            .get<SoundCloudTrack>(
                 `https://api.soundcloud.com/resolve.json?url=${trackUrl}&client_id=${clientId}`
             )
-            .then(({ data }) => {
-                return axios.get<SoundCloudTrack>(data.location)
-            })
             .then(({ data }) => {
                 setStreamUrl(data.stream_url)
                 const samplesUrl = data.waveform_url.replace('.png', '.json')
@@ -83,8 +75,6 @@ const FieldExtension = ({ sdk }: FieldExtensionProps) => {
         setSamples(undefined)
         fetchMetadata()
     }, [setError, setSamples, fetchMetadata])
-
-    // https://api.soundcloud.com/resolve.json?url=https%3A%2F%2Fsoundcloud.com%2Fmsmrsounds%2Fms-mr-hurricane-chvrches-remix&client_id=[your_client_id]
 
     return (
         <>
