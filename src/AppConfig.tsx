@@ -1,88 +1,86 @@
-import * as React from 'react';
+import * as React from 'react'
 
-import { AppConfigParams, SavedParams } from './typings';
-import { Heading, Paragraph, TextField, Typography } from '@contentful/forma-36-react-components';
+import { AppConfigParams, SavedParams } from './typings'
+import { Heading, Paragraph, TextField, Typography } from '@contentful/forma-36-react-components'
 
-import styles from './styles';
+import styles from './styles'
 
 export default class AppConfig extends React.Component<AppConfigParams, SavedParams> {
-  state: SavedParams = {
-    clientId: ''
-  };
-
-  async componentDidMount() {
-    const { sdk } = this.props;
-
-    const savedParams = ((await sdk.app.getParameters()) || {}) as SavedParams;
-
-    // eslint-disable-next-line react/no-did-mount-set-state
-    this.setState(
-      {
-        clientId: (savedParams as SavedParams).clientId || ''
-      },
-      () => sdk.app.setReady()
-    );
-
-    sdk.app.onConfigure(() => this.configureApp());
-  }
-
-  async configureApp() {
-    const { clientId } = this.state;
-    const { notifier } = this.props.sdk;
-
-    if (!clientId) {
-      notifier.error('You must provide a valid client ID!');
-      return false;
+    state: SavedParams = {
+        clientId: ''
     }
 
-    return {
-      parameters: {
-        clientId
-      }
-    };
-  }
+    async componentDidMount() {
+        const { sdk } = this.props
 
-  render() {
-    return (
-      <>
-        <div className={styles.background} />
-        <div className={styles.body}>
-          <div>
-            <Typography>
-              <Heading className={styles.spaced}>About SoundCloud</Heading>
+        const savedParams = ((await sdk.app.getParameters()) || {}) as SavedParams
 
-              <Paragraph>This app allows you to fetch metadata for a SoundCloud track.</Paragraph>
-            </Typography>
-          </div>
+        // eslint-disable-next-line react/no-did-mount-set-state
+        this.setState(
+            {
+                clientId: (savedParams as SavedParams).clientId || ''
+            },
+            () => sdk.app.setReady()
+        )
 
-          <hr className={styles.splitter} />
+        sdk.app.onConfigure(() => this.configureApp())
+    }
 
-          <Typography>
-            <Heading className={styles.spaced}>Configuration</Heading>
+    async configureApp() {
+        const { clientId } = this.state
+        const { notifier } = this.props.sdk
 
-            <TextField
-              labelText="Client ID"
-              name="clientId"
-              id="clientId"
-              required
-              value={this.state.clientId}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                this.setState({ clientId: event.target.value.trim() })
-              }
-              helpText="Client ID for the SoundCloud API"
-              className={styles.spaced}
-              textInputProps={{
-                type: 'text',
-                placeholder: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
-              }}
-            />
-          </Typography>
-        </div>
+        if (!clientId) {
+            notifier.error('You must provide a valid client ID!')
+            return false
+        }
 
-        <div className={styles.logo}>
-          <img src={require('./soundcloud-logo.png')} alt="SoundCloud Logo" />
-        </div>
-      </>
-    );
-  }
+        return {
+            parameters: {
+                clientId
+            }
+        }
+    }
+
+    render() {
+        return (
+            <>
+                <div className={styles.background} />
+                <div className={styles.body}>
+                    <div>
+                        <Typography>
+                            <Heading className={styles.spaced}>About SoundCloud</Heading>
+
+                            <Paragraph>
+                                This app allows you to fetch metadata for a SoundCloud track.
+                            </Paragraph>
+                        </Typography>
+                    </div>
+
+                    <hr className={styles.splitter} />
+
+                    <Typography>
+                        <Heading className={styles.spaced}>Configuration</Heading>
+
+                        <TextField
+                            labelText="Client ID"
+                            name="clientId"
+                            id="clientId"
+                            required
+                            value={this.state.clientId}
+                            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                                this.setState({ clientId: event.target.value.trim() })
+                            }
+                            helpText="Client ID for the SoundCloud API"
+                            className={styles.spaced}
+                            textInputProps={{
+                                type: 'text',
+                                placeholder: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+                            }}
+                        />
+                    </Typography>
+                </div>
+            </>
+        )
+    }
 }

@@ -1,13 +1,13 @@
-import { AppExtensionSDK, FieldExtensionSDK } from 'contentful-ui-extensions-sdk';
+import { AppExtensionSDK, FieldExtensionSDK } from 'contentful-ui-extensions-sdk'
 
 export interface AppConfigParams {
-  sdk: AppExtensionSDK;
+    sdk: AppExtensionSDK
 }
 
 export interface SavedParams {
-  clientId: string;
+    clientId: string
 }
 
 export interface FieldExtensionProps {
-  sdk: FieldExtensionSDK;
+    sdk: FieldExtensionSDK
 }

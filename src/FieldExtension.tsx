@@ -1,99 +1,106 @@
-import { Button, TextField } from '@contentful/forma-36-react-components';
-import React, { useCallback, useEffect, useState } from 'react';
+import { Button, TextField } from '@contentful/forma-36-react-components'
+import React, { useCallback, useEffect, useState } from 'react'
 
-import { FieldExtensionProps } from './typings';
-import axios from 'axios';
+import { FieldExtensionProps } from './typings'
+import axios from 'axios'
 
 type Metadata = {
-    trackId?: string;
-    streamUrl?: string;
-    samples?: number[];
-};
+    trackUrl?: string
+    streamUrl?: string
+    samples?: number[]
+}
 
 type InstallationParameters = {
-    clientId: string;
-};
+    clientId: string
+}
+
+type SoundCloudLocation = {
+    status: string
+    location: string
+}
 
 type SoundCloudTrack = {
-    waveform_url: string;
-    stream_url: string;
-};
+    waveform_url: string
+    stream_url: string
+}
 
 type SoundCloudWaveform = {
-    samples: number[];
-};
+    samples: number[]
+}
 
 const FieldExtension = ({ sdk }: FieldExtensionProps) => {
-    const { clientId } = sdk.parameters.installation as InstallationParameters;
-    const savedValue = (sdk.field.getValue() || {}) as Metadata;
-    const [trackId, setTrackId] = useState(savedValue.trackId);
-    const [streamUrl, setStreamUrl] = useState(savedValue.streamUrl);
-    const [samples, setSamples] = useState(savedValue.samples);
-    const [error, setError] = useState<Error>();
+    const { clientId } = sdk.parameters.installation as InstallationParameters
+    const savedValue = (sdk.field.getValue() || {}) as Metadata
+    const [trackUrl, setTrackUrl] = useState(savedValue.trackUrl)
+    const [streamUrl, setStreamUrl] = useState(savedValue.streamUrl)
+    const [samples, setSamples] = useState(savedValue.samples)
+    const [error, setError] = useState<Error>()
 
     useEffect(() => {
-        sdk.window.startAutoResizer();
-    }, [sdk.window]);
+        sdk.window.startAutoResizer()
+    }, [sdk.window])
 
     useEffect(() => {
         sdk.field.setValue({
-            trackId,
+            trackUrl,
             streamUrl,
             samples
-        });
-    }, [trackId, streamUrl, samples, sdk.field]);
+        })
+    }, [trackUrl, streamUrl, samples, sdk.field])
 
-    const updateTrackId = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-        setError(undefined);
-        setStreamUrl(undefined);
-        setSamples(undefined);
-        setTrackId(event.target.value);
-    }, []);
+    const updateTrackUrl = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+        setError(undefined)
+        setStreamUrl(undefined)
+        setSamples(undefined)
+        setTrackUrl(event.target.value)
+    }, [])
 
     const fetchMetadata = useCallback(() => {
         axios
-            .get<SoundCloudTrack>(
-                `https://api.soundcloud.com/tracks/${trackId}?client_id=${clientId}`
+            .get<SoundCloudLocation>(
+                `https://api.soundcloud.com/resolve.json?url=${trackUrl}&client_id=${clientId}`
             )
             .then(({ data }) => {
-                setStreamUrl(data.stream_url);
-                const samplesUrl = data.waveform_url.replace('.png', '.json');
-                return axios.get<SoundCloudWaveform>(samplesUrl);
+                return axios.get<SoundCloudTrack>(data.location)
             })
             .then(({ data }) => {
-                const maxValue = Math.max(...data.samples);
-                const samples = data.samples.map((x: number) => x / maxValue);
-                setSamples(samples);
+                setStreamUrl(data.stream_url)
+                const samplesUrl = data.waveform_url.replace('.png', '.json')
+                return axios.get<SoundCloudWaveform>(samplesUrl)
+            })
+            .then(({ data }) => {
+                const maxValue = Math.max(...data.samples)
+                const samples = data.samples.map((x: number) => x / maxValue)
+                setSamples(samples)
             })
             .catch((error: Error) => {
-                setError(error);
-            });
-    }, [clientId, trackId]);
+                setError(error)
+            })
+    }, [clientId, trackUrl])
 
     const handleClick = useCallback(() => {
-        setError(undefined);
-        setSamples(undefined);
-        fetchMetadata();
-    }, [setError, setSamples, fetchMetadata]);
+        setError(undefined)
+        setSamples(undefined)
+        fetchMetadata()
+    }, [setError, setSamples, fetchMetadata])
+
+    // https://api.soundcloud.com/resolve.json?url=https%3A%2F%2Fsoundcloud.com%2Fmsmrsounds%2Fms-mr-hurricane-chvrches-remix&client_id=[your_client_id]
 
     return (
         <>
             <section>
                 <TextField
-                    id="trackId"
-                    name="trackId"
-                    labelText="Track ID"
+                    id="trackUrl"
+                    name="trackUrl"
+                    labelText="SoundCloud URL"
                     required
-                    validationMessage={error ? 'Invalid track id.' : undefined}
-                    textInputProps={{ value: trackId, type: 'number', onChange: updateTrackId }}
+                    validationMessage={error ? 'Invalid track url.' : undefined}
+                    textInputProps={{ value: trackUrl, onChange: updateTrackUrl }}
+                    helpText="This should be the URL of an individual track (not a playlist)"
                 />
-            </section>
-            <section>
-                <Button onClick={handleClick} disabled={!trackId} icon="Settings">
+                <Button onClick={handleClick} disabled={!trackUrl} icon="Settings">
                     Generate Metadata
                 </Button>
-            </section>
-            <section>
                 <TextField
                     id="streamUrl"
                     name="streamUrl"
@@ -101,8 +108,6 @@ const FieldExtension = ({ sdk }: FieldExtensionProps) => {
                     required
                     textInputProps={{ value: streamUrl, disabled: true }}
                 />
-            </section>
-            <section>
                 <TextField
                     id="samples"
                     name="samples"
@@ -115,7 +120,7 @@ const FieldExtension = ({ sdk }: FieldExtensionProps) => {
                 />
             </section>
         </>
-    );
-};
+    )
+}
 
-export default FieldExtension;
+export default FieldExtension
