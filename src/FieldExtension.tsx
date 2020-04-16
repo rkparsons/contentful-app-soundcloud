@@ -1,13 +1,22 @@
-import { Button, TextField } from '@contentful/forma-36-react-components'
+import {
+    Button,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableRow,
+    TextField
+} from '@contentful/forma-36-react-components'
 import React, { useCallback, useEffect, useState } from 'react'
 
 import { FieldExtensionProps } from './typings'
 import axios from 'axios'
 
 type Metadata = {
-    trackUrl?: string
-    streamUrl?: string
+    duration?: number
     samples?: number[]
+    streamUrl?: string
+    trackUrl?: string
 }
 
 type InstallationParameters = {
@@ -15,8 +24,9 @@ type InstallationParameters = {
 }
 
 type SoundCloudTrack = {
-    waveform_url: string
+    duration: number
     stream_url: string
+    waveform_url: string
 }
 
 type SoundCloudWaveform = {
@@ -28,6 +38,7 @@ const FieldExtension = ({ sdk }: FieldExtensionProps) => {
     const savedValue = (sdk.field.getValue() || {}) as Metadata
     const [trackUrl, setTrackUrl] = useState(savedValue.trackUrl)
     const [streamUrl, setStreamUrl] = useState(savedValue.streamUrl)
+    const [duration, setDuration] = useState(savedValue.duration)
     const [samples, setSamples] = useState(savedValue.samples)
     const [error, setError] = useState<Error>()
 
@@ -39,13 +50,15 @@ const FieldExtension = ({ sdk }: FieldExtensionProps) => {
         sdk.field.setValue({
             trackUrl,
             streamUrl,
+            duration,
             samples
         })
-    }, [trackUrl, streamUrl, samples, sdk.field])
+    }, [trackUrl, streamUrl, duration, samples, sdk.field])
 
     const updateTrackUrl = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         setError(undefined)
         setStreamUrl(undefined)
+        setDuration(undefined)
         setSamples(undefined)
         setTrackUrl(event.target.value)
     }, [])
@@ -57,6 +70,7 @@ const FieldExtension = ({ sdk }: FieldExtensionProps) => {
             )
             .then(({ data }) => {
                 setStreamUrl(data.stream_url)
+                setDuration(data.duration)
                 const samplesUrl = data.waveform_url.replace('.png', '.json')
                 return axios.get<SoundCloudWaveform>(samplesUrl)
             })
@@ -86,28 +100,27 @@ const FieldExtension = ({ sdk }: FieldExtensionProps) => {
                     required
                     validationMessage={error ? 'Invalid track url.' : undefined}
                     textInputProps={{ value: trackUrl, onChange: updateTrackUrl }}
-                    helpText="This should be the URL of an individual track (not a playlist)"
                 />
                 <Button onClick={handleClick} disabled={!trackUrl} icon="Settings">
                     Generate Metadata
                 </Button>
-                <TextField
-                    id="streamUrl"
-                    name="streamUrl"
-                    labelText="Stream URL"
-                    required
-                    textInputProps={{ value: streamUrl, disabled: true }}
-                />
-                <TextField
-                    id="samples"
-                    name="samples"
-                    labelText="Audio Peaks"
-                    required
-                    textInputProps={{
-                        value: samples ? `${samples.length}` : undefined,
-                        disabled: true
-                    }}
-                />
+
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Stream URL</TableCell>
+                            <TableCell>Duration (ms)</TableCell>
+                            <TableCell>Waveform Samples</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        <TableRow>
+                            <TableCell>{streamUrl}</TableCell>
+                            <TableCell>{duration}</TableCell>
+                            <TableCell>{samples && samples.length}</TableCell>
+                        </TableRow>
+                    </TableBody>
+                </Table>
             </section>
         </>
     )
