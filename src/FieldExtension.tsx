@@ -31,7 +31,7 @@ type SoundCloudWaveform = {
 
 const FieldExtension = ({ sdk }: FieldExtensionProps) => {
     const { clientId } = sdk.parameters.installation as InstallationParameters;
-    const savedValue = sdk.field.getValue() as Metadata;
+    const savedValue = (sdk.field.getValue() || {}) as Metadata;
     const [trackId, setTrackId] = useState(savedValue.trackId);
     const [streamUrl, setStreamUrl] = useState(savedValue.streamUrl);
     const [samples, setSamples] = useState(savedValue.samples);
@@ -86,8 +86,8 @@ const FieldExtension = ({ sdk }: FieldExtensionProps) => {
             <section>
                 <TextField
                     id="trackId"
-                    name="streamUrl"
-                    labelText="Stream URL"
+                    name="trackId"
+                    labelText="Track ID"
                     required
                     validationMessage={!trackId ? 'Enter valid track ID.' : ''}
                     textInputProps={{ value: trackId, type: 'number', onChange: updateTrackId }}
